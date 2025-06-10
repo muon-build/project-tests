@@ -1,0 +1,4 @@
+[wrap-git]
+url = https://github.com/mesonbuild/wrapdb
+revision = 3b94ff499f272b69b1f84a8514f230143cb0e888
+depth = 1

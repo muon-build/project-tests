@@ -1,0 +1,19 @@
+{
+	"muon_version": "v0.5.0",
+	"alpine_version": "3.21",
+	"projects": {
+		"cairo": {
+			"alpine_packages": [
+				"freetype-dev"
+			]
+		},
+		"fontconfig": {
+			"alpine_packages": [
+				"freetype-dev"
+			]
+		}
+	},
+	"broken": [
+		"blueprint-compiler"
+	]
+}

@@ -1,0 +1,101 @@
+fs = import('fs')
+json = import('json')
+curl = import('curl')
+
+func projects_from_wrapdb() -> list[any]
+    subproject('wrapdb')
+
+    ci_config = json.parse(fs.read('subprojects/wrapdb/ci_config.json'))
+    releases = json.parse(fs.read('subprojects/wrapdb/releases.json'))
+
+    broken = ci_config.broken_linux
+
+    res = []
+
+    total = ci_config.keys().length()
+    i = 0
+    foreach proj, proj_conf : ci_config
+        i += 1
+        if proj.startswith('_') or proj.startswith('broken_')
+            continue
+        elif proj in broken
+            continue
+        elif proj not in releases
+            continue
+        elif not proj_conf.get('build_on', {}).get('alpine', true)
+            continue
+        endif
+
+        wrap_version = releases[proj].versions[0]
+        wrap_path_base = f'subprojects/@proj@_@wrap_version@.wrap'
+        wrap_path = meson.project_source_root() / wrap_path_base
+
+        if not fs.is_file(wrap_path)
+            url = f'https://wrapdb.mesonbuild.com/v2/@proj@_@wrap_version@/@proj@.wrap'
+            print(f'@0@/@1@ -'.format(i, total) + url + '\n')
+            data = curl.fetch(url)
+            fs.write(wrap_path, data)
+        endif
+
+        res += [{'name': proj, 'wrap_path': wrap_path_base} + proj_conf]
+    endforeach
+
+    return res
+endfunc
+
+M = {}
+M.generate = func()
+    conf = json.parse(fs.read('config.json'))
+
+    projects = []
+    projects += projects_from_wrapdb()
+
+    foreach proj : projects
+        packages = [
+            'build-base',
+            'python3',
+            'git',
+            'bash'
+        ]
+        packages += proj.get('alpine_packages', [])
+        name = proj.name
+
+        if name in conf.broken
+            continue
+        endif
+
+        if name in conf.projects
+            packages += conf.projects[name].get('alpine_packages', [])
+        endif
+
+        build_options = []
+        foreach opt : proj.get('build_options', [])
+            if opt.startswith(f'@name@:')
+                opt = opt.split(':')[1]
+            endif
+            build_options += f'-D@opt@'
+        endforeach
+
+        test(
+            name,
+            find_program('docker'),
+            args: [
+                'run',
+                '--rm',
+                '-i',
+                '-v', '@0@:/home/src:ro'.format(meson.project_source_root()),
+                '-w', '/home/build',
+                'alpine:@0@'.format(conf.alpine_version),
+                '/home/src/alpine.sh',
+                proj.wrap_path,
+                name,
+                ' '.join(packages),
+                ' '.join(build_options),
+                proj.get('skip_tests', false) ? '' : '1',
+            ],
+            timeout: 120,
+        )
+    endforeach
+endfunc
+
+return M
