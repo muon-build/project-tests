@@ -51,12 +51,7 @@ M.generate = func()
     projects += projects_from_wrapdb()
 
     foreach proj : projects
-        packages = [
-            'build-base',
-            'python3',
-            'git',
-            'bash'
-        ]
+        packages = []
         packages += proj.get('alpine_packages', [])
         name = proj.name
 
@@ -85,7 +80,7 @@ M.generate = func()
                 '-i',
                 '-v', '@0@:/home/src:ro'.format(meson.project_source_root()),
                 '-w', '/home/build',
-                'alpine:@0@'.format(conf.alpine_version),
+                'muon-project-tests',
                 '/home/src/alpine.sh',
                 proj.wrap_path,
                 name,

@@ -1,10 +1,22 @@
 {
-	"muon_version": "v0.5.0",
-	"alpine_version": "3.21",
 	"projects": {
+		"gdbm": {
+			"checksum_mismatch": true
+		},
+		"lmdb": {
+			"checksum_mismatch": true
+		},
+		"rtaudio": {
+			"checksum_mismatch": true
+		},
 		"cairo": {
 			"alpine_packages": [
 				"freetype-dev"
+			]
+		},
+		"c-ares": {
+			"alpine_packages": [
+				"gtest-dev"
 			]
 		},
 		"fontconfig": {
