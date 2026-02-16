@@ -34,7 +34,6 @@ WORKDIR /src
 RUN --mount=type=bind,source=.,target=/src/muon <<EOF
 	build=/src/build
 	cd /src/muon
-	ls
 	tools/ci/bootstrap.sh "$build" \
 		-Dwerror=true \
 		-Dlibarchive=enabled \

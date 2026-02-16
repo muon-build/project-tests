@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  alpine:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: project-tests
+    - uses: actions/checkout@v3
+      with:
+        repository: muon-build/muon
+        path: muon
+    - name: build-muon
+      run: |
+        cd muon
+        ./bootstrap.sh build
+        build/muon-bootstrap -v build build
+    - name: test
+      run: |
+        cd project-tests
+        ../muon/build/muon setup -Dmuon=../muon build
+        ../muon/build/muon -C build test -v -ddots
+    - name: upload test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: tests.html
+        path: project-tests/build/.muon/tests.html

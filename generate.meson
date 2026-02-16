@@ -1,8 +1,10 @@
 fs = import('fs')
 json = import('json')
 curl = import('curl')
+subprojects = import('subprojects')
 
 func projects_from_wrapdb() -> list[any]
+    subprojects.update('wrapdb', required: true)
     subproject('wrapdb')
 
     ci_config = json.parse(fs.read('subprojects/wrapdb/ci_config.json'))
@@ -32,7 +34,7 @@ func projects_from_wrapdb() -> list[any]
 
         if not fs.is_file(wrap_path)
             url = f'https://wrapdb.mesonbuild.com/v2/@proj@_@wrap_version@/@proj@.wrap'
-            print(f'@0@/@1@ -'.format(i, total) + url + '\n')
+            print(f'@0@/@1@ - @2@\n'.format(i, total, url))
             data = curl.fetch(url)
             fs.write(wrap_path, data)
         endif
@@ -44,7 +46,7 @@ func projects_from_wrapdb() -> list[any]
 endfunc
 
 M = {}
-M.generate = func()
+M.generate = func(dependencies list[custom_tgt]:)
     conf = json.parse(fs.read('config.json'))
 
     projects = []
@@ -53,6 +55,7 @@ M.generate = func()
     foreach proj : projects
         packages = []
         packages += proj.get('alpine_packages', [])
+        timeout = 120
         name = proj.name
 
         if name in conf.broken
@@ -60,7 +63,9 @@ M.generate = func()
         endif
 
         if name in conf.projects
-            packages += conf.projects[name].get('alpine_packages', [])
+            project_conf = conf.projects[name]
+            packages += project_conf.get('alpine_packages', [])
+            timeout = project_conf.get('timeout', timeout)
         endif
 
         build_options = []
@@ -80,15 +85,16 @@ M.generate = func()
                 '-i',
                 '-v', '@0@:/home/src:ro'.format(meson.project_source_root()),
                 '-w', '/home/build',
-                'muon-project-tests',
-                '/home/src/alpine.sh',
+                get_option('image_tag'),
+                '/home/src/docker_entry.sh',
                 proj.wrap_path,
                 name,
                 ' '.join(packages),
                 ' '.join(build_options),
                 proj.get('skip_tests', false) ? '' : '1',
             ],
-            timeout: 120,
+            timeout: timeout,
+            depends: dependencies,
         )
     endforeach
 endfunc

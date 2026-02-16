@@ -1,0 +1,12 @@
+option(
+    'muon',
+    type: 'string',
+    value: '',
+    description: 'path to muon source',
+)
+
+option(
+    'image_tag',
+    type: 'string',
+    value: 'muon-project-tests',
+)

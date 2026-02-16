@@ -1,31 +1,107 @@
 {
-	"projects": {
-		"gdbm": {
-			"checksum_mismatch": true
-		},
-		"lmdb": {
-			"checksum_mismatch": true
-		},
-		"rtaudio": {
-			"checksum_mismatch": true
-		},
-		"cairo": {
-			"alpine_packages": [
-				"freetype-dev"
-			]
-		},
-		"c-ares": {
-			"alpine_packages": [
-				"gtest-dev"
-			]
-		},
-		"fontconfig": {
-			"alpine_packages": [
-				"freetype-dev"
-			]
-		}
-	},
-	"broken": [
-		"blueprint-compiler"
-	]
+  "broken": [
+    "blueprint-compiler"
+  ],
+  "projects": {
+    "atomic_queue": {
+      "timeout": 500
+    },
+    "c-ares": {
+      "alpine_packages": [
+        "gtest-dev"
+      ]
+    },
+    "cairo": {
+      "alpine_packages": [
+        "freetype-dev"
+      ],
+      "timeout": 500
+    },
+    "epoxy": {
+      "timeout": 500
+    },
+    "fontconfig": {
+      "alpine_packages": [
+        "freetype-dev"
+      ]
+    },
+    "freeglut": {
+      "timeout": 500
+    },
+    "gdbm": {
+      "checksum_mismatch": true
+    },
+    "gdk-pixbuf": {
+      "timeout": 500
+    },
+    "gee": {
+      "timeout": 500
+    },
+    "imgui-sfml": {
+      "timeout": 500
+    },
+    "json-glib": {
+      "timeout": 500
+    },
+    "libffmpegthumbnailer": {
+      "timeout": 500
+    },
+    "libxmlpp": {
+      "timeout": 500
+    },
+    "lmdb": {
+      "checksum_mismatch": true
+    },
+    "lvgl": {
+      "timeout": 500
+    },
+    "msgpackc-cxx": {
+      "timeout": 500
+    },
+    "nanoarrow": {
+      "timeout": 500
+    },
+    "nanobind": {
+      "timeout": 500
+    },
+    "nativefiledialog-extended": {
+      "timeout": 500
+    },
+    "openblas": {
+      "timeout": 500
+    },
+    "openh264": {
+      "timeout": 500
+    },
+    "openssl": {
+      "timeout": 500
+    },
+    "orcus": {
+      "timeout": 500
+    },
+    "pango": {
+      "timeout": 500
+    },
+    "qarchive": {
+      "timeout": 500
+    },
+    "quazip": {
+      "timeout": 500
+    },
+    "rtaudio": {
+      "checksum_mismatch": true
+    },
+    "sdl3": {
+      "timeout": 500
+    },
+    "sdl3_image": {
+      "timeout": 500
+    },
+    "sfml": {
+      "timeout": 500
+    },
+    "wayland": {
+      "timeout": 500
+    }
+  }
 }
