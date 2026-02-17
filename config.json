@@ -18,33 +18,101 @@
       "timeout": 500
     },
     "epoxy": {
-      "timeout": 500
+      "skip": "massive dependency: mesa-dev"
     },
     "fontconfig": {
       "alpine_packages": [
-        "freetype-dev"
+        "freetype-dev",
+        "libxml2-dev"
       ]
     },
     "freeglut": {
-      "timeout": 500
+      "skip": "massive dependency: mesa-dev"
+    },
+    "fuse": {
+      "alpine_packages": [
+        "eudev-dev"
+      ],
+      "options": [
+        "-Db_largefile=enabled"
+      ]
     },
     "gdbm": {
       "checksum_mismatch": true
     },
     "gdk-pixbuf": {
-      "timeout": 500
+      "alpine_packages": [
+        "glib-dev",
+        "py3-docutils"
+      ]
     },
     "gee": {
       "timeout": 500
     },
+    "glbinding": {
+      "skip": "massive dependency: mesa-dev"
+    },
+    "glew": {
+      "skip": "dependency: gl"
+    },
+    "glfw": {
+      "alpine_packages": [
+        "libxrandr-dev",
+        "libxinerama-dev",
+        "libxcursor-dev"
+      ]
+    },
+    "glib": {
+      "alpine_packages": [
+        "libffi-dev",
+        "gettext-dev"
+      ],
+      "alpine_packages_del": [
+        "gettext-tiny-dev",
+        "musl-libintl"
+      ],
+	  "timeout": 500
+    },
+    "harfbuzz": {
+	  "timeout": 500
+	},
+    "oatpp": {
+	  "timeout": 500
+	},
+    "pegtl": {
+	  "timeout": 500
+	},
+    "glib-networking": {
+      "alpine_packages": [
+        "glib-dev",
+        "libproxy-dev"
+      ]
+    },
+    "hinnant-date": {
+      "alpine_packages": [
+        "curl-dev"
+      ]
+    },
+    "htslib": {
+      "alpine_packages": [
+        "zlib-dev"
+      ]
+    },
     "imgui-sfml": {
-      "timeout": 500
+      "skip": "massive dependency: mesa-dev"
     },
     "json-glib": {
-      "timeout": 500
+      "alpine_packages": [
+        "glib-dev"
+      ]
     },
     "libffmpegthumbnailer": {
       "timeout": 500
+    },
+    "liblastfm": {
+      "alpine_packages": [
+        "curl-dev"
+      ]
     },
     "libxmlpp": {
       "timeout": 500
@@ -65,7 +133,7 @@
       "timeout": 500
     },
     "nativefiledialog-extended": {
-      "timeout": 500
+      "skip": "massive dependency: gtk"
     },
     "openblas": {
       "timeout": 500
@@ -83,10 +151,10 @@
       "timeout": 500
     },
     "qarchive": {
-      "timeout": 500
+      "skip": "massive dependency: qt"
     },
     "quazip": {
-      "timeout": 500
+      "skip": "massive dependency: qt"
     },
     "rtaudio": {
       "checksum_mismatch": true
@@ -97,7 +165,40 @@
     "sdl3_image": {
       "timeout": 500
     },
+    "libxcursor": {
+      "alpine_packages": [
+        "libxrender-dev"
+      ]
+	},
+    "libxext": {
+      "alpine_packages": [
+        "libx11-dev"
+      ]
+	},
+    "libxinerama": {
+      "alpine_packages": [
+        "libx11-dev"
+      ]
+	},
+    "libxrandr": {
+      "alpine_packages": [
+        "libxext-dev"
+      ]
+	},
+	"libxkbcommon": {
+      "alpine_packages": [
+	 	"libxcb-dev"
+	  ]
+	},
+	"libxrender": {
+      "alpine_packages": [
+	 	"libx11-dev"
+	  ]
+	},
     "sfml": {
+      "alpine_packages": [
+        "openal-soft-dev"
+      ],
       "timeout": 500
     },
     "wayland": {

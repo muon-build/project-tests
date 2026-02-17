@@ -51,9 +51,11 @@ M.generate = func(dependencies list[custom_tgt]:)
 
     projects = []
     projects += projects_from_wrapdb()
+    conf_found = {}
 
     foreach proj : projects
         packages = []
+        packages_del = []
         packages += proj.get('alpine_packages', [])
         timeout = 120
         name = proj.name
@@ -62,19 +64,35 @@ M.generate = func(dependencies list[custom_tgt]:)
             continue
         endif
 
+        build_options = []
+        # foreach opt : proj.get('build_options', [])
+        #     if opt.startswith(f'@name@:')
+        #         opt = opt.split(':')[1]
+        #     endif
+        #     build_options += f'-D@opt@'
+        # endforeach
+
         if name in conf.projects
             project_conf = conf.projects[name]
+            conf_found[name] = true
+
+            if 'skip' in project_conf or 'checksum_mismatch' in project_conf
+                continue
+            endif
+
             packages += project_conf.get('alpine_packages', [])
+            packages_del += project_conf.get('alpine_packages_del', [])
             timeout = project_conf.get('timeout', timeout)
+            build_options += project_conf.get('options', [])
         endif
 
-        build_options = []
-        foreach opt : proj.get('build_options', [])
-            if opt.startswith(f'@name@:')
-                opt = opt.split(':')[1]
+        tmp = []
+        foreach package : packages
+            if package not in packages_del
+                tmp += package
             endif
-            build_options += f'-D@opt@'
         endforeach
+        packages = tmp
 
         test(
             name,
@@ -84,18 +102,24 @@ M.generate = func(dependencies list[custom_tgt]:)
                 '--rm',
                 '-i',
                 '-v', '@0@:/home/src:ro'.format(meson.project_source_root()),
-                '-w', '/home/build',
                 get_option('image_tag'),
                 '/home/src/docker_entry.sh',
                 proj.wrap_path,
                 name,
                 ' '.join(packages),
+                ' '.join(packages_del),
                 ' '.join(build_options),
                 proj.get('skip_tests', false) ? '' : '1',
             ],
             timeout: timeout,
             depends: dependencies,
         )
+    endforeach
+
+    foreach name, _ : conf.projects
+        if name not in conf_found
+            warning(f'unknown project: @name@')
+        endif
     endforeach
 endfunc
 

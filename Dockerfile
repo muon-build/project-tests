@@ -44,3 +44,6 @@ EOF
 
 FROM base
 COPY --from=builder /src/build/muon /usr/bin/muon
+WORKDIR /home/build
+RUN apk add \
+	gdb
