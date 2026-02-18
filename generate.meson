@@ -14,10 +14,9 @@ func projects_from_wrapdb() -> list[any]
 
     res = []
 
-    total = ci_config.keys().length()
-    i = 0
+    urls_to_fetch = []
+    destinations = []
     foreach proj, proj_conf : ci_config
-        i += 1
         if proj.startswith('_') or proj.startswith('broken_')
             continue
         elif proj in broken
@@ -32,14 +31,16 @@ func projects_from_wrapdb() -> list[any]
         wrap_path_base = f'subprojects/@proj@_@wrap_version@.wrap'
         wrap_path = meson.project_source_root() / wrap_path_base
 
-        if not fs.is_file(wrap_path)
-            url = f'https://wrapdb.mesonbuild.com/v2/@proj@_@wrap_version@/@proj@.wrap'
-            print(f'@0@/@1@ - @2@\n'.format(i, total, url))
-            data = curl.fetch(url)
-            fs.write(wrap_path, data)
-        endif
+        url = f'https://wrapdb.mesonbuild.com/v2/@proj@_@wrap_version@/@proj@.wrap'
+        urls_to_fetch += url
+        destinations += wrap_path
 
         res += [{'name': proj, 'wrap_path': wrap_path_base} + proj_conf]
+    endforeach
+
+    data = curl.fetch(urls_to_fetch, batch_size: 16)
+    foreach i : range(data.length())
+        fs.write(destinations[i], data[i])
     endforeach
 
     return res
