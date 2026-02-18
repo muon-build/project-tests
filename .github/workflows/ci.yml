@@ -35,6 +35,7 @@ jobs:
         ../muon/build/muon setup -Dmuon=../muon build
         ../muon/build/muon -C build test -v -ddots
     - name: upload test results
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: tests.html
