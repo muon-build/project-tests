@@ -24,6 +24,8 @@ jobs:
         path: muon
     - name: build-muon
       run: |
+        sudo apt-get update
+        sudo apt-get install -y libcurl4-openssl-dev
         cd muon
         ./bootstrap.sh build
         build/muon-bootstrap -v build build
